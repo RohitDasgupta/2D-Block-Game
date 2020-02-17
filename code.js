@@ -88,7 +88,7 @@ window.preload = function () {
     //console.log(blocks.length);
 
     function draw() {
-
+      background(0);
       
       if (mouseDown("leftButton") && !(mouseY > map_height) && !(mouseX > map_width)) {
         var current_block = checkPosition(mouseX, mouseY);
@@ -283,8 +283,7 @@ window.preload = function () {
         spawner.x = px + randomNumber(-tile_width * 5, tile_width * 5 );
         spawner.y = py + randomNumber(-tile_height * 5, +tile_height * 5);
       } 
-      spawner.timer-= .2 //+ floor(score/5);
-
+      spawner.timer-= .2 + floor(score/3);
       //target behaviour
       fill(target[2]);
       targetSize += .2
