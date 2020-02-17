@@ -1,7 +1,7 @@
 var p5Inst = new p5(null, 'sketch');
 
 window.preload = function () {
-  initMobileControls(p5Inst);
+  //initMobileControls(p5Inst);
 
   p5Inst._predefinedSpriteAnimations = {};
   p5Inst._pauseSpriteAnimationsByDefault = false;
@@ -88,7 +88,7 @@ window.preload = function () {
     //console.log(blocks.length);
 
     function draw() {
-      background(0);
+      //background(0); you suck barock
       
       if (mouseDown("leftButton") && !(mouseY > map_height) && !(mouseX > map_width)) {
         var current_block = checkPosition(mouseX, mouseY);
@@ -379,13 +379,13 @@ window.preload = function () {
         chunks[chunk_x][chunk_y].push(blocks[i]);
       }
       background(0);
-      /*
+      
       for (var i = 0; i <= map_width; i += chunks_size) {
         for (var j = 0; j <= map_height; j += chunks_size) {
           drawChunk(getChunk(i, j).x, getChunk(i, j).y);
         }
       }
-      */
+      
       
     }
 
