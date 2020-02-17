@@ -1,7 +1,7 @@
 var p5Inst = new p5(null, 'sketch');
 
 window.preload = function () {
-  //initMobileControls(p5Inst);
+  initMobileControls(p5Inst);
 
   p5Inst._predefinedSpriteAnimations = {};
   p5Inst._pauseSpriteAnimationsByDefault = false;
