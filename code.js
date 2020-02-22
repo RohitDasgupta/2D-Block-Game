@@ -16,7 +16,7 @@ window.preload = function () {
         image,
         props.frameSize.x,
         props.frameSize.y,
-        frameCount
+        // frameCount
       );
       p5Inst._predefinedSpriteAnimations[props.name] = loadAnimation(spriteSheet);
       p5Inst._predefinedSpriteAnimations[props.name].looping = props.looping;
@@ -75,7 +75,6 @@ window.preload = function () {
     World.frameRate = 60;
     // noStroke();
 
-
     //generate level
     createCanvas(windowWidth, windowHeight);
     //startGame();
@@ -116,7 +115,6 @@ window.preload = function () {
         return;
         
         case "game_in_progress":
-          console.log(target);
         break;
 
         case "game_over":
@@ -124,6 +122,8 @@ window.preload = function () {
           text("YOU LOST",map_width/2, map_height/2);
           textSize(30);
           text("Press Space to Play Again", map_width/2, map_height/2 + 40)
+
+          if(keyWentDown("space"))state="start_game";
         return;
 
       }
@@ -188,18 +188,6 @@ window.preload = function () {
 
 
       if (vAcc < tile_height) vAcc += grav;
-      //if(jump)vAcc -= jumpForce;
-
-
-      //draw all chunks
-      /*
-      for(var i = 0; i < chunks.length; i++){
-        for(var j = 0; j < chunks[i].length; j++){
-          drawChunk(i,j)
-        }
-      }
-      */
-
 
       //drawing chunks before drawing any entities
       
@@ -226,7 +214,6 @@ window.preload = function () {
       //update enemies
 
       for (var enemy = 0; enemy < enemies.length; enemy++) {
-
         var ex = enemies[enemy][0];
         var ey = enemies[enemy][1];
 
@@ -257,16 +244,13 @@ window.preload = function () {
         }
 
         //subtract enemy life for existing
-
-        if(!enemies[enemy][2])return;
-        if (enemies[enemy][2] <= 0) {
-          drawChunksAround(1,getChunk(enemies[enemy][0], enemies[enemy][1]).x, getChunk(enemies[enemy][0], enemies[enemy][1]).y, false, true)
-          enemies.splice(enemy, 1);
-        }
         enemies[enemy][2]--;
 
-
-
+        if(enemies[enemy][2] <= 0){
+          var temp = []
+          for(var i = 0; i < enemies.length-1; i++)temp.push(enemies[i]);
+          enemies = temp;
+        }
 
       }
 
@@ -279,13 +263,13 @@ window.preload = function () {
       translate(-spawner.x, -spawner.y)
 
       if(spawner.timer <= 0){
-        enemies.push([spawner.x, spawner.y, default_lifetime]);
+        enemies.push([spawner.x, spawner.y, default_lifetime] );
+        console.log(enemies);
         spawner.timer = randomNumber(60* 6, 60 * 8);
         spawner.x = px + randomNumber(-tile_width * 5, tile_width * 5 );
         spawner.y = py + randomNumber(-tile_height * 5, +tile_height * 5);
       } 
       spawner.timer-= .2 + floor(score/3);
-
       //target behaviour
       updateTarget();
 
@@ -354,10 +338,10 @@ window.preload = function () {
 
           var col = j + noise(i / tile_width * 0.06) * map_width / 8;
 
-          if (col > map_height / 12) color = [62, 28, 6]
-          if (col > 2 * map_height / 12) color = [49, 42, 9];
-          if (col > 3 * map_height / 12) color = [23, 81, 14];
-          if (col > 4 * map_height / 12) color = [71, 111, 0];
+          if (col > 2 * map_height / 12) color = [62, 28, 6]
+          if (col > 3 * map_height / 12) color = [49, 42, 9];
+          if (col > 4 * map_height / 12) color = [23, 81, 14];
+          if (col > 5 * map_height / 12) color = [71, 111, 0];
 
           color[0] += 20;
           color[1] += 20;
@@ -501,6 +485,17 @@ window.preload = function () {
           drawChunk(i, j);
         }
       }
+    }
+
+    class enemy{
+      constructor(x,y){
+        this.x = x;
+        this.y = y;
+        this.life = default_lifetime;
+      }
+
+
+
     }
 
     // -----
