@@ -42,32 +42,28 @@ window.preload = function () {
     var px = tile_width / 2 + tile_width;
     var py = tile_height / 2;
     var pcolor = "white";
-    var grav = 1;
+    var grav = tile_width/22.8;
     var blocks = [];
-    var xspeed = 2;
-    var jumpForce = 12;
+    var xspeed = tile_width/6.5;
+    var jumpForce = tile_height/1.40;
     var vAcc = grav;
 
     var targetSize = 0;
     var targetMax = 15;
 
-    var targetSize;
-    var targetMax;
-
     var mouseState;
 
     var mem;
     var score = 0;
-    var ex;
-    var ey;
     var default_lifetime;
     var enemies;
 
-    var target;
+    var target = [map_width/2, map_height/3, "blue"];
     var spawner = {};
     var chunks_size = tile_width * 4; //blocks
 
     var chunks = new Array(round(map_width / chunks_size) + 1);
+    var drawnChunks = []
 
     for (var i = 0; i < chunks.length; i++) {
       chunks[i] = new Array(round(map_height / chunks_size) + 1);
@@ -82,14 +78,58 @@ window.preload = function () {
 
     //generate level
     createCanvas(windowWidth, windowHeight);
-    startGame();
-
-
+    //startGame();
+    
+    var state = "start_screen";
     //console.log(blocks.length);
 
     function draw() {
-      background(0);
-      
+
+      textSize(50);
+      textAlign(CENTER, CENTER);
+
+      switch(state){
+        case "start_screen":
+          background(0);
+          text("Collect the blue target!",map_width/2, map_height/2 - 25);
+
+          textSize(30);
+          text("Break the blocks with the mouse and run from the ghosts!", map_width/2, map_height/2 + 75);
+          text("WASD or Arrow Keys to move, Spacebar to start",map_width/2, map_height/2 + 115);
+
+          textSize(20);
+          text("PS: Walljump!", map_width/2, map_height/2 + 170);
+
+          textSize(15);
+          text("Made by Rohit Dasgupta",map_width/2, 15);
+
+
+          if(keyWentDown("space"))state="start_game";
+
+          updateTarget();
+
+        return;
+
+        case "start_game":
+          startGame();
+          state = "game_in_progress";
+        return;
+        
+        case "game_in_progress":
+          console.log(target);
+        break;
+
+        case "game_over":
+          background(0);
+          text("YOU LOST",map_width/2, map_height/2);
+          textSize(30);
+          text("Press Space to Play Again", map_width/2, map_height/2 + 40)
+        return;
+
+      }
+
+      drawnChunks = [];
+
       if (mouseDown("leftButton") && !(mouseY > map_height) && !(mouseX > map_width)) {
         var current_block = checkPosition(mouseX, mouseY);
         var mouseChunk = chunks[getChunk(mouseX, mouseY).x][getChunk(mouseX, mouseY).y];
@@ -108,36 +148,6 @@ window.preload = function () {
           mouseChunk.push(newBlock);
           mem.push(mem.splice(0, 1)[0]);
           mem.pop();
-          var i = mouseChunk.length - 1;
-          for (var enemy in enemies) {
-
-            for (var j = 0; j < 4; j++) {
-
-              var bx = enemies[enemy][0];
-              var by = enemies[enemy][1];
-              if (j == 0) {
-                bx -= tile_width / 2;
-                by -= tile_height / 2;
-              }
-              if (j == 1) {
-                bx += tile_width / 2;
-                by -= tile_height / 2;
-              }
-              if (j == 2) {
-                bx += tile_width / 2;
-                by += tile_height / 2;
-              }
-              if (j == 3) {
-                bx -= tile_width / 2;
-                by += tile_height / 2;
-              }
-              if (blocks[i].x <= bx && blocks[i].x + tile_width >= bx && blocks[i].y <= by && blocks[i].y + tile_height >= by) {
-                blocks.pop();
-                mem.push(newBlock.color);
-                break;
-              }
-            }
-          }
 
           if (checkCollision(px, py)) {
             mouseChunk.pop();
@@ -193,32 +203,25 @@ window.preload = function () {
 
       //drawing chunks before drawing any entities
       
-      drawChunksAround(1, getChunk(px, py).x, getChunk(px, py).y);
-      for (var enemy in enemies) drawChunksAround(2, getChunk(enemies[enemy][0], enemies[enemy][1]).x, getChunk(enemies[enemy][0], enemies[enemy][1]).y);
-      drawChunksAround(1,getChunk(target[0],target[1]).x, getChunk(target[0],target[1]).y);
-      drawChunk(spawner.x, spawner.y);
-      drawChunksAround(2, getChunk(map_width/2, 0).x,getChunk(map_width/2, 0).y);
-      
+      //drawChunksAround(1, getChunk(px, py).x, getChunk(px, py).y);
+      for (var enemy in enemies) drawChunksAround(1, enemies[enemy][0], enemies[enemy][1]);
+      drawChunksAround(1, target[0], target[1]);
+      drawChunksAround(1, spawner.x, spawner.y);
+      drawChunksAround(2, map_width/2, 0);
+      drawChunksAround(1, px, py);
+
       stroke(255)
       fill(0);
       textAlign(CENTER, TOP);
       textSize(50)
-      text("Score: " + score ,map_width/2, 0)
+      text("Score: " + round(score) ,map_width/2, 0)
       //draw Player
       fill(pcolor);
       rect(px - tile_width / 2, py - tile_height / 2, tile_width, tile_height);
 
       if (py > map_height) {
-        startGame();
+        state="game_over";
       }
-
-      /*
-      //draw boxes
-      for (var block in blocks) {
-        fill(blocks[block].color);
-        rect(blocks[block].x, blocks[block].y, tile_width, tile_height);
-      }
-      */
 
       //update enemies
 
@@ -235,8 +238,8 @@ window.preload = function () {
         if (!yDir) yDir = 0;
 
 
-        ex += xDir/1.5;
-        ey += yDir/1.5;
+        ex += xDir/(tile_width/10.7);
+        ey += yDir/(tile_width/10.7);
 
 
 
@@ -250,21 +253,19 @@ window.preload = function () {
         enemies[enemy][1] = ey;
 
         if (dist(ex, ey, px, py) < tile_width) {
-          startGame();
+          state="game_over";
         }
 
         //subtract enemy life for existing
-        
-        if(enemies[enemy] == undefined){
-          return;
-        }
 
-        enemies[enemy][2]--;
-
+        if(!enemies[enemy][2])return;
         if (enemies[enemy][2] <= 0) {
-          drawChunksAround(4,getChunk(enemies[enemy][0], enemies[enemy][1]).x, getChunk(enemies[enemy][0], enemies[enemy][1]).y)
+          drawChunksAround(1,getChunk(enemies[enemy][0], enemies[enemy][1]).x, getChunk(enemies[enemy][0], enemies[enemy][1]).y, false, true)
           enemies.splice(enemy, 1);
         }
+        enemies[enemy][2]--;
+
+
 
 
       }
@@ -284,11 +285,9 @@ window.preload = function () {
         spawner.y = py + randomNumber(-tile_height * 5, +tile_height * 5);
       } 
       spawner.timer-= .2 + floor(score/3);
+
       //target behaviour
-      fill(target[2]);
-      targetSize += .2
-      if (targetSize > targetMax) targetSize = 1;
-      ellipse(target[0], target[1], targetSize, targetSize);
+      updateTarget();
 
       //check if target is colliding with player and move target if that happens
       for (var j = 0; j < 4; j++) {
@@ -316,9 +315,6 @@ window.preload = function () {
           target[0] = randomNumber(tile_width, map_width - tile_width);
           target[1] = randomNumber(tile_height, map_height - tile_height);
           score+=1;
-          //do something to some score not added
-
-
           break;
         }
       }
@@ -326,6 +322,9 @@ window.preload = function () {
     }
 
     function startGame() {
+
+      drawnChunks = [];
+
 
       px = tile_width / 2 + tile_width;
       py = tile_height / 2;
@@ -343,27 +342,27 @@ window.preload = function () {
       score = 0;
 
       target = [200, 200, "blue"];
-      noiseSeed(randomNumber(1, 1000));
+
       for (var i = 0; i < map_width; i += tile_width) {
-        var height = noise(i / tile_width * 0.06) * map_height / 1.5 - (noise(i / tile_width * 0.1) * map_height / 10 - map_height / 20) + randomNumber(-10, 10) + noise(i / tile_width * 0.06) * map_height / 4 - map_height / 8;
+        var height = noise(i / tile_width * 0.06) * map_height/1.25 - (noise(i / tile_width * 0.1) * map_height / 10 - map_height / 20) + randomNumber(-10, 10) + noise(i / tile_width * 0.06) * map_height / 4 - map_height / 8;
         for (var j = 0; j < height; j += tile_height) {
           var x = i;
           var y = round((map_height - tile_height - j) / tile_height) * tile_height;
           var color;
+
           color = [41, 15, 4]
 
           var col = j + noise(i / tile_width * 0.06) * map_width / 8;
 
           if (col > map_height / 12) color = [62, 28, 6]
           if (col > 2 * map_height / 12) color = [49, 42, 9];
-          if (col > 3 * map_height / 12) color = [23, 81, 14]
-
-          if (col > 4 * map_height / 12) color = [71, 111, 0]
+          if (col > 3 * map_height / 12) color = [23, 81, 14];
+          if (col > 4 * map_height / 12) color = [71, 111, 0];
 
           color[0] += 20;
           color[1] += 20;
           color[2] += 20;
-          //console.log(height);
+
           blocks.push({ x: x, y: y, color: color });
         }
       }
@@ -378,14 +377,11 @@ window.preload = function () {
         chunk_y = round(blocks[i].y / chunks_size);
         chunks[chunk_x][chunk_y].push(blocks[i]);
       }
-      background(0);
-      /*
-      for (var i = 0; i <= map_width; i += chunks_size) {
-        for (var j = 0; j <= map_height; j += chunks_size) {
-          drawChunk(getChunk(i, j).x, getChunk(i, j).y);
-        }
-      }
-      */
+      
+
+      drawAllChunks();
+
+      drawnChunks = []
       
     }
 
@@ -402,7 +398,7 @@ window.preload = function () {
 
     function checkCollision(x, y) {
 
-      var tempChunks = drawChunksAround(3, getChunk(x, y).x, getChunk(x, y).y);
+      var tempChunks = drawChunksAround(3, x, y, true);
 
       var blocks = [];
 
@@ -411,6 +407,7 @@ window.preload = function () {
           blocks.push(tempChunks[chunk][block]);
         }
       }
+
       for (var i in blocks) {
         for (var j = 0; j < 4; j++) {
           var bx = x;
@@ -445,11 +442,21 @@ window.preload = function () {
       }
     }
 
-    function drawChunk(x, y) {
+    function drawChunk(x, y, overrideChunkList) {
       if (chunks[x] == undefined) return;
       if (chunks[x][y] == undefined) return;
       if (chunks[x][y] == []) return;
-      stroke(255);
+
+      
+      for(var chunk = 0; chunk < drawnChunks.length; chunk++){
+        if(drawnChunks[chunk] == [x,y].toString()){
+          return
+        }
+      }
+
+      if(!overrideChunkList)drawnChunks.push([x,y].toString());
+
+      noStroke();
       fill(0)
       var xpos = x * chunks_size;
       var ypos = y * chunks_size;
@@ -460,11 +467,23 @@ window.preload = function () {
       }
     }
 
-    function drawChunksAround(chunk_draw_size, chunk_x, chunk_y) {
+    function updateTarget(){
+      fill(target[2]);
+      targetSize += .2
+      if (targetSize > targetMax) targetSize = 1;
+      stroke(255);
+      ellipse(target[0], target[1], targetSize, targetSize);
+    }
+
+    function drawChunksAround(chunk_draw_size, x, y, dontDraw, overrideChunkList) {
+      
+      var chunk_x = getChunk(x, y).x;
+      var chunk_y = getChunk(x, y).y;
+
       var chunksAround = []
-      for (var i = -chunk_draw_size; i < chunk_draw_size; i++) {
-        for (var j = -chunk_draw_size; j < chunk_draw_size; j++) {
-          drawChunk(chunk_x + i, chunk_y + j);
+      for (var i = -chunk_draw_size; i <= chunk_draw_size; i++) {
+        for (var j = -chunk_draw_size; j <= chunk_draw_size; j++) {
+          if(!dontDraw)drawChunk(chunk_x + i, chunk_y + j, overrideChunkList);
           if (chunks[chunk_x + i]) {
             if (chunks[chunk_x + i][chunk_y + j]) {
               chunksAround.push(chunks[chunk_x + i][chunk_y + j])
@@ -473,6 +492,14 @@ window.preload = function () {
         }
       }
       return chunksAround;
+    }
+
+    function drawAllChunks(){
+      for (var i = 0; i < chunks.length; i++) {
+        for (var j = 0; j < chunks[i].length; j++) {
+          drawChunk(i, j);
+        }
+      }
     }
 
     // -----
