@@ -33,8 +33,8 @@ window.preload = function () {
       }
     }
     // -----
-    var tile_width = 16;
-    var tile_height = 16;
+    var tile_width = 32;
+    var tile_height = 32;
 
     var map_width = windowWidth;
     var map_height = windowHeight;
@@ -57,6 +57,7 @@ window.preload = function () {
     var score = 0;
     var default_lifetime;
     var enemies;
+    var enemySpeed = 2;
 
     var target = [map_width/2, map_height/3, "blue"];
     var spawner = {};
@@ -222,8 +223,8 @@ window.preload = function () {
         if (!yDir) yDir = 0;
 
 
-        ex += xDir/(tile_width/10.7);
-        ey += yDir/(tile_width/10.7);
+        ex += xDir * 1/(tile_width/10.7);
+        ey += yDir * 1/(tile_width/10.7);
 
 
 
