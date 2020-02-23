@@ -203,9 +203,6 @@ window.preload = function () {
       textAlign(CENTER, TOP);
       textSize(50)
       text("Score: " + round(score) ,map_width/2, 0)
-      //draw Player
-      fill(pcolor);
-      rect(px - tile_width / 2, py - tile_height / 2, tile_width, tile_height);
 
       if (py > map_height) {
         state="game_over";
@@ -232,8 +229,6 @@ window.preload = function () {
 
         //draw them
         // drawChunksAround(5, getChunk(ex, ey).x, getChunk(ex,ey).y);
-        fill("red");
-        rect(ex - tile_width / 2, ey - tile_height / 2, tile_width, tile_height);
 
 
         enemies[enemy][0] = ex;
@@ -248,9 +243,15 @@ window.preload = function () {
 
         if(enemies[enemy][2] <= 0){
           var temp = []
-          for(var i = 0; i < enemies.length-1; i++)temp.push(enemies[i]);
+          for(var i = 0; i < enemies.length-1; i++){
+          	if(enemies[i] != enemies[enemy])temp.push(enemies[i]);
+          }
           enemies = temp;
+          continue;
         }
+
+        fill("red");
+        rect(ex - tile_width / 2, ey - tile_height / 2, tile_width, tile_height);
 
       }
 
@@ -302,6 +303,9 @@ window.preload = function () {
           break;
         }
       }
+
+      fill("white");
+      rect(px - tile_width/2, py - tile_height/2, tile_width, tile_height);
 
     }
 
