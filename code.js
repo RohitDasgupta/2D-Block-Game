@@ -120,9 +120,10 @@ window.preload = function () {
 
         case "game_over":
           background(0);
-          text("YOU LOST",map_width/2, map_height/2);
+          text("YOU LOST \nFINAL SCORE: " + score, map_width/2, map_height/2);
           textSize(30);
-          text("Press Space to Play Again", map_width/2, map_height/2 + 40)
+          text("Press Space to Play Again", map_width/2, map_height/2 + 50 + 40);
+	  
 
           if(keyWentDown("space"))state="start_game";
         return;
