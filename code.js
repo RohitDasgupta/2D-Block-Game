@@ -252,13 +252,15 @@ window.preload = function () {
           continue;
         }
 
-        fill("red");
+	fill('red');
+	
+	
         rect(ex - tile_width / 2, ey - tile_height / 2, tile_width, tile_height);
 
       }
 
       //spawner behaviour
-      fill("red");
+      noFill();
       translate(spawner.x, spawner.y);
       rotate(World.frameCount)
       rect(-tile_width/2,-tile_height/2,tile_width, tile_height);
@@ -323,7 +325,7 @@ window.preload = function () {
       mem = [];
 
       default_lifetime = 60 * 15;
-      enemies = [[map_width/2, map_height/2, default_lifetime]];
+      enemies = [];
 
       spawner.x = randomNumber(tile_width, map_width - tile_width);
       spawner.y = randomNumber(tile_height, map_height - tile_height);
