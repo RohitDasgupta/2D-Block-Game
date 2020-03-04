@@ -321,7 +321,7 @@ window.preload = function () {
       px = tile_width / 2 + tile_width;
       py = tile_height / 2;
       mouseState = "destroy"
-
+      blocks = [];
       mem = [];
 
       default_lifetime = 60 * 15;
@@ -465,7 +465,7 @@ window.preload = function () {
       if (targetSize > targetMax) targetSize = 1;
       stroke(255);
       ellipse(target[0], target[1], targetSize, targetSize);
-      if(!target)target=[randomNumber(tile_width, map_width-tile_width) , randomNumber(tile_height, map_height-tile_height), "blue"]
+      if(!target)target=[randomNumber(tile_width*2, map_width-tile_width*2) , randomNumber(tile_height*2, map_height-tile_height*2), "blue"]
     }
 
     function drawChunksAround(chunk_draw_size, x, y, dontDraw, overrideChunkList) {
