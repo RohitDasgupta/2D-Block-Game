@@ -59,7 +59,7 @@ window.preload = function () {
     var enemies;
     var enemySpeed = 2;
 
-    var target;
+    var target = [random(TILE_SIZE*2,map_width - TILE_SIZE*2), random(TILE_SIZE*2, map_height - TILE_SIZE/2), "blue"];
     var spawner = {};
     var chunks_size = tile_width * 4; //blocks
 
