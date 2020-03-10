@@ -44,8 +44,8 @@ window.preload = function () {
     var pcolor = "white";
     var grav = tile_width/22.8;
     var blocks = [];
-    var xspeed = tile_width/6.5;
-    var jumpForce = tile_height/1.40;
+    var xspeed = 4;
+    var jumpForce = 12;
     var vAcc = grav;
 
     var targetSize = 0;
@@ -57,11 +57,11 @@ window.preload = function () {
     var score = 0;
     var default_lifetime;
     var enemies;
-    var enemySpeed = 2;
+    var enemySpeed = .25;
 
-    var target = [random(tile_width * 2,map_width - tile_width *2), random(tile_height*2, map_height - tile_height/2), "blue"];
+    var target = [windowWidth/2, windowHeight/2 - 100, "blue"];
     var spawner = {};
-    var chunks_size = tile_width * 4; //blocks
+    var chunks_size = tile_width * 2; //blocks
 
     var chunks = new Array(round(map_width / chunks_size) + 1);
     var drawnChunks = []
@@ -197,7 +197,7 @@ window.preload = function () {
       for (var enemy in enemies) drawChunksAround(1, enemies[enemy][0], enemies[enemy][1]);
       drawChunksAround(1, target[0], target[1]);
       drawChunksAround(1, spawner.x, spawner.y);
-      drawChunksAround(2, map_width/2, 0);
+      drawChunksAround(3, map_width/2, 0);
       drawChunksAround(1, px, py);
 
       stroke(255)
