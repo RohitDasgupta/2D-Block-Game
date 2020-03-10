@@ -33,8 +33,8 @@ window.preload = function () {
       }
     }
     // -----
-    var tile_width = 32;
-    var tile_height = 32;
+    var tile_width = 16;
+    var tile_height = 16;
 
     var map_width = windowWidth;
     var map_height = windowHeight;
