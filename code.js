@@ -334,7 +334,7 @@ window.preload = function () {
       score = 0;
 
       target = [random(tile_width * 2,map_width - tile_width *2), random(tile_height*2, map_height - tile_height/2), "blue"];
-
+      noiseSeed(random(1,1000000))
       for (var i = 0; i < map_width; i += tile_width) {
         var height = noise(i / tile_width * 0.06) * map_height/1.25 - (noise(i / tile_width * 0.1) * map_height / 10 - map_height / 20) + randomNumber(-10, 10) + noise(i / tile_width * 0.06) * map_height / 4 - map_height / 8;
         for (var j = 0; j < height; j += tile_height) {
