@@ -103,7 +103,8 @@ window.preload = function () {
           textSize(15);
           text("Made by Rohit Dasgupta",map_width/2, 15);
 
-
+          textSize(15);
+          text("Made with p5.play, a JavaScript library", map_width/2,map_height-15)
           if(keyWentDown("space"))state="start_game";
 
           updateTarget();
